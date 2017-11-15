@@ -2,12 +2,12 @@
 /** @var array $config */
 $config['displayErrorDetails'] = true; //开启slim debug模式
 
-//$config['db']['type'] = "mysql";
-//$config['db']['host'] = "localhost";
-//$config['db']['user'] = "root";
-//$config['db']['pass'] = "";
-//$config['db']['dbname'] = "slim";
-//$config['db']['charset'] = "utf8";
+$config['db']['type'] = "mysql";
+$config['db']['host'] = "localhost";
+$config['db']['user'] = "root";
+$config['db']['pass'] = "123456";
+$config['db']['dbname'] = "adadmin";
+$config['db']['charset'] = "utf8";
 
 //1. 会员注册，删除，修改
 // 2. 自定义广告模板标题，广告管理

@@ -1,0 +1,220 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Xenon Boostrap Admin Panel" />
+    <meta name="author" content="" />
+
+    <title>注册</title>
+
+    <link rel="stylesheet" href="http://fonts.useso.com/css?family=Arimo:400,700,400italic">
+    <link rel="stylesheet" href="static/assets/css/fonts/linecons/css/linecons.css">
+    <link rel="stylesheet" href="static/assets/css/fonts/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="static/assets/css/bootstrap.css">
+    <link rel="stylesheet" href="static/assets/css/xenon-core.css">
+    <link rel="stylesheet" href="static/assets/css/xenon-forms.css">
+    <link rel="stylesheet" href="static/assets/css/xenon-components.css">
+    <link rel="stylesheet" href="static/assets/css/xenon-skins.css">
+    <link rel="stylesheet" href="static/assets/css/custom.css">
+
+    <script src="static/assets/js/jquery-1.11.1.min.js"></script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style>
+        .col-center-block {
+            float: none;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 360px;
+        }
+    </style>
+</head>
+<body class="page-body login-page">
+<div style="margin: 0 auto;width: 768px;float: none; display: block; margin-left: auto; margin-right: auto; ">
+    <div style="font-size:35px;text-align:center;margin-bottom:25px;font-weight:300">注册</div>
+    <div class="col-center-block">
+
+        <script type="text/javascript">
+            jQuery(document).ready(function($)
+            {
+                // Reveal Reg form
+                setTimeout(function(){ $(".fade-in-effect").addClass('in'); }, 1);
+
+                // Validation and Ajax action
+                $("form#login").validate({
+                    rules: {
+                        username: {
+                            required: true
+                        },
+                        email: {
+                            required: true
+                        },
+                        passwd: {
+                            required: true
+                        },
+                        passwd2: {
+                            required: true
+                        }
+                    },
+
+                    messages: {
+                        username: {
+                            required: '请输入用户名！'
+                        },
+                        email: {
+                            required: '请输入邮箱！'
+                        },
+                        passwd: {
+                            required: '请输入密码！'
+                        },
+                        passwd2: {
+                            required: '请再次输入密码！'
+                        }
+                    },
+
+                    // Form Processing via AJAX
+                    submitHandler: function(form)
+                    {
+                        show_loading_bar(70); // Fill progress bar to 70% (just a given value)
+
+                        var opts = {
+                            "closeButton": true,
+                            "debug": false,
+                            "positionClass": "toast-top-full-width",
+                            "onclick": null,
+                            "showDuration": "300",
+                            "hideDuration": "1000",
+                            "timeOut": "5000",
+                            "extendedTimeOut": "1000",
+                            "showEasing": "swing",
+                            "hideEasing": "linear",
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut"
+                        };
+
+                        $.ajax({
+                            url: "/reg",
+                            method: 'POST',
+                            dataType: 'json',
+                            data: {
+                                username: $(form).find('#username').val(),
+                                email: $(form).find('#email').val(),
+                                passwd: $(form).find('#passwd').val(),
+                                passwd2: $(form).find('#passwd2').val(),
+                            },
+                            success: function(resp)
+                            {
+                                show_loading_bar({
+                                    delay: .5,
+                                    pct: 100,
+                                    finish: function(){
+
+                                        // Redirect after successful login page (when progress bar reaches 100%)
+                                        if(resp.code == 0)
+                                        {
+                                            window.location.href = '/login';
+                                        }
+                                        else if (resp.code == 1)
+                                        {
+                                            toastr.error("密码不一致！请重新输入", "注册失败!", opts);
+                                            $passwd.select();
+                                        }
+                                        else if (resp.code == 2)
+                                        {
+                                            toastr.error("用户名已存在！请重新输入", "注册失败!", opts);
+                                            $username.select();
+                                        }
+                                        else if (resp.code == 3)
+                                        {
+                                            toastr.error("信息不完整！请重新输入", "注册失败!", opts);
+                                        }
+                                    }
+                                });
+
+                            }
+                        });
+
+                    }
+                });
+
+                // Set Form focus
+                $("form#login .form-group:has(.form-control):first .form-control").focus();
+            });
+        </script>
+
+        <!-- Errors container -->
+        <div class="errors-container">
+
+
+        </div>
+
+        <!-- Add class "fade-in-effect" for login form effect -->
+        <form method="post" role="form" id="login" class="login-form fade-in-effect">
+
+            <div class="form-group">
+                <label class="control-label" for="username">用户名</label>
+                <input type="text" class="form-control input-dark" name="username" id="username" autocomplete="off" />
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="email">邮箱</label>
+                <input type="text" class="form-control input-dark" name="email" id="email" autocomplete="off" />
+            </div>
+
+            <div class="form-group">
+                <label class="control-label" for="passwd">密码</label>
+                <input type="password" class="form-control input-dark" name="passwd" id="passwd" autocomplete="off" />
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="passwd2">确认密码</label>
+                <input type="password" class="form-control input-dark" name="passwd2" id="passwd2" autocomplete="off" />
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-dark  btn-block text-left">
+                    <i class="fa-lock"></i>
+                    注册
+                </button>
+            </div>
+
+            <div class="login-footer">
+                <a href="/login">登陆</a>
+
+                {#<div class="info-links">#}
+                    {#<a href="#">ToS</a> -#}
+                    {#<a href="#">Privacy Policy</a>#}
+                {#</div>#}
+
+            </div>
+
+        </form>
+
+</div>
+
+</div>
+
+<!-- Bottom Scripts -->
+<script src="static/assets/js/bootstrap.min.js"></script>
+<script src="static/assets/js/TweenMax.min.js"></script>
+<script src="static/assets/js/resizeable.js"></script>
+<script src="static/assets/js/joinable.js"></script>
+<script src="static/assets/js/xenon-api.js"></script>
+<script src="static/assets/js/xenon-toggles.js"></script>
+<script src="static/assets/js/jquery-validate/jquery.validate.min.js"></script>
+<script src="static/assets/js/toastr/toastr.min.js"></script>
+
+
+<!-- JavaScripts initializations and stuff -->
+<script src="static/assets/js/xenon-custom.js"></script>
+
+</body>
+</html>

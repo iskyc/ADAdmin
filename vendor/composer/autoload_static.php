@@ -18,6 +18,7 @@ class ComposerStaticInit4d1ed852de1ce193eaa793f6ffb3946b
         ),
         'S' => 
         array (
+            'Slim\\Views\\' => 11,
             'Slim\\' => 5,
         ),
         'P' => 
@@ -43,6 +44,10 @@ class ComposerStaticInit4d1ed852de1ce193eaa793f6ffb3946b
         'Twig\\' => 
         array (
             0 => __DIR__ . '/..' . '/twig/twig/src',
+        ),
+        'Slim\\Views\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/slim/twig-view/src',
         ),
         'Slim\\' => 
         array (
