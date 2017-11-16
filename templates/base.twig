@@ -71,7 +71,12 @@
                 <!-- add class "multiple-expanded" to allow multiple submenus to open -->
                 <!-- class "auto-inherit-active-class" will automatically add "active" class for parent elements who are marked already with class "active" -->
                 {% for menu_item in menu %}
+                {% if menu_item.id == active_menu %}
+                <li class="active">
+                {% else %}
                 <li>
+                {% endif %}
+                
                     <a href="{{ menu_item.url }}">
                         <i class="linecons-cog"></i>
                         <span class="title">{{ menu_item.name }}</span>

@@ -5,6 +5,12 @@ use \Psr\Http\Message\ResponseInterface as Response;
 
 require 'vendor/autoload.php';
 require 'config.php';
+
+date_default_timezone_set('PRC');
+session_start();
+
+
+
 //$app = new \Slim\App;
 $app = new \Slim\App(["settings" => $config]);
 // Fetch DI Container
@@ -36,16 +42,124 @@ $container['db'] = function ($c) {
     return $medoo;
 };
 
+function render($app, Response $response, $twig_file, $params)
+{
+    global $_SESSION;
+    global $menu_item_list;    
+    if (!isset($_SESSION['user']))
+    {
+        $app->redirect('/');
+        return;
+    }
+    $user = $_SESSION['user'];
+    $filter_menu = array();
+    // 过滤掉没有权限的菜单
+    foreach ($menu_item_list as $item)
+    {
+        if ($item['type'] == $user['type'])
+        {
+            array_push($filter_menu, $item);
+        }
+    }
+
+    $active_menu = str_replace('.twig', '', $twig_file);
+
+    $temp_param = array('menu' => $filter_menu, 'active_menu' => $active_menu);
+    if ($params)
+    {
+        array_combine($temp_param, $params);
+    }
+
+    $app->view->render($response, 'index.twig', $temp_param);    
+}
+
 $app->get('/', function (Request $request, Response $response)
 {
-    global $menu_item_list;
-    $this->view->render($response, 'index.twig', array('menu' => $menu_item_list));
+    render($this, $response, 'index.twig');
+});
+
+$app->get('/member', function (Request $request, Response $response)
+{
+    global $_SESSION;    
+    if (!isset($_SESSION['user']))
+    {
+        $app->redirect('/');
+        return;
+    }
+    $user = $_SESSION['user'];
+    if ($user['type'] != 0)
+    {
+        $response->withStatus(404);
+        return;        
+    }
+    render($this, $response, 'member.twig');    
+});
+
+$app->get('/adconfig', function (Request $request, Response $response)
+{
+    global $_SESSION;    
+    if (!isset($_SESSION['user']))
+    {
+        $app->redirect('/');
+        return;
+    }
+    $user = $_SESSION['user'];
+    if ($user['type'] != 0)
+    {
+        $response->withStatus(404);
+        return;        
+    }
+    render($this, $response, 'adconfig.twig');    
+});
+
+$app->get('/madconfig', function (Request $request, Response $response)
+{
+    global $_SESSION;    
+    if (!isset($_SESSION['user']))
+    {
+        $app->redirect('/');
+        return;
+    }
+    render($this, $response, 'madconfig.twig');    
+});
+
+$app->get('/domainconfig', function (Request $request, Response $response)
+{
+    global $_SESSION;    
+    if (!isset($_SESSION['user']))
+    {
+        $app->redirect('/');
+        return;
+    }    $user = $_SESSION['user'];
+    if ($user['type'] != 0)
+    {
+        $response->withStatus(404);
+        return;        
+    }
+    $user = $_SESSION['user'];
+    if ($user['type'] != 0)
+    {
+        $response->withStatus(404);
+        return;        
+    }
+    render($this, $response, 'domainconfig.twig');    
 });
 
 $app->get('/login', function (Request $request, Response $response)
 {
-    $this->view->render($response, 'login.twig');
+    global $_SESSION;
+    if (isset($_SESSION['user']))
+    {
+        $user = $_SESSION['user'];            
+        if ($user['state'] == 0)
+        {
+            $this->redirect('/');
+            return;
+        }
+    }
+    $this->view->render($response, 'login.twig');        
 });
+
 $app->get('/reg', function (Request $request, Response $response)
 {
     $this->view->render($response, 'register.twig');
@@ -53,16 +167,42 @@ $app->get('/reg', function (Request $request, Response $response)
 
 $app->post('/login', function (Request $request, Response $response)
 {
+    global $_SESSION;
     $username = $request->getParsedBody()['username'];
     $passwd = $request->getParsedBody()['passwd'];
     $resp = array();
-    if ($username == 'admin' && $passwd == '123456')
+    if (empty($username) || empty($passwd))
     {
-        $resp['code'] = 1;
+        $resp['code'] = 3;
     }
-    else
+    else 
     {
-        $resp['code'] = 0;
+        $data = $this->db->select('users', '*', ['username[=]' => $username]);
+        if (!isset($data) || count($data) == 0)
+        {
+            $resp['code'] = 2;  // 用户不存在
+        }
+        else
+        {
+            $pwdMd5 = md5($passwd);
+            $userData = $data[0];
+            if ($userData['password'] == $pwdMd5)
+            {
+                if ($userData['state'] != 0)
+                {
+                    $resp['code'] = 4;                                                    
+                }
+                else
+                {
+                    $resp['code'] = 1;
+                }
+            }
+            else
+            {
+                $resp['code'] = 0;      
+                $_SESSION['user'] = $userData;
+            }
+        }
     }
 
     return $response->withJson($resp, 200);
