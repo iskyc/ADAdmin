@@ -95,7 +95,7 @@ $app->get('/member', function (Request $request, Response $response)
         return $response->withStatus(404);
     }
 
-    $users = $this->db->select('');
+//    $users = $this->db->select('');
 
     return render($this, $response, 'member.twig');
 });
