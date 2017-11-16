@@ -53,7 +53,9 @@
                         <img src="static/assets/images/logo-collapsed@2x.png" width="40" alt="" />
                     </a>
                 </div>
-
+                {#<div class="settings-icon" style="color: #ffffff">#}
+                  {#<a href="/logout">退出登陆</a>#}
+                {#</div>#}
                 <!-- This will toggle the mobile menu and will be visible only on mobile devices -->
                 <div class="mobile-menu-toggle visible-xs">
                     <a href="#" data-toggle="user-info-menu">
@@ -91,6 +93,34 @@
 
     <div class="main-content">
         <!-- Main Footer -->
+        <nav class="navbar user-info-navbar" role="navigation">
+
+            <!-- Right links for user info navbar -->
+            <ul class="user-info-menu right-links list-inline list-unstyled">
+
+                <li class="dropdown user-profile" style="min-height: 76px;">
+                    <a href="#" data-toggle="dropdown">
+                        <span>
+								菜单
+								<i class="fa-angle-down"></i>
+							</span>
+                    </a>
+
+                    <ul class="dropdown-menu user-profile-menu list-unstyled">
+                        <li class="last">
+                            <a href="extra-lockscreen.html">
+                                <i class="fa-lock"></i>
+                                退出
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+        {% block content %}
+
+        {% endblock %}
         <!-- Choose between footer styles: "footer-type-1" or "footer-type-2" -->
         <!-- Add class "sticky" to  always stick the footer to the end of page (if page contents is small) -->
         <!-- Or class "fixed" to  always fix the footer to the end of page -->

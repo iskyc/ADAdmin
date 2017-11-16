@@ -47,7 +47,7 @@ function redirect()
     
 }
 
-function render($app, Response $response, $twig_file, $params=[NULL])
+function render($app, Response $response, $twig_file, $params=array())
 {
     global $_SESSION;
     global $menu_item_list;    
@@ -69,12 +69,12 @@ function render($app, Response $response, $twig_file, $params=[NULL])
     $active_menu = str_replace('.twig', '', $twig_file);
 
     $temp_param = array('menu' => $filter_menu, 'active_menu' => $active_menu);
-    if ($params)
+    if (isset($params) && count($params) > 0)
     {
         array_combine($temp_param, $params);
     }
 
-    return $this->view->render($response, 'index.twig', $temp_param);    
+    return $app->view->render($response, $twig_file, $temp_param);
 }
 
 $app->get('/', function (Request $request, Response $response)
@@ -94,7 +94,10 @@ $app->get('/member', function (Request $request, Response $response)
     {        
         return $response->withStatus(404);
     }
-    returnrender($this, $response, 'member.twig');    
+
+    $users = $this->db->select('');
+
+    return render($this, $response, 'member.twig');
 });
 
 $app->get('/adconfig', function (Request $request, Response $response)
@@ -151,6 +154,13 @@ $app->get('/login', function (Request $request, Response $response)
     $this->view->render($response, 'login.twig');        
 });
 
+$app->get('/logout', function (Request $request, Response $response)
+{
+    global $_SESSION;
+    unset($_SESSION['user']);
+    return $response->withRedirect('/login', 302);
+});
+
 $app->get('/reg', function (Request $request, Response $response)
 {
     $this->view->render($response, 'register.twig');
@@ -185,13 +195,13 @@ $app->post('/login', function (Request $request, Response $response)
                 }
                 else
                 {
-                    $resp['code'] = 1;
+                    $resp['code'] = 0;
+                    $_SESSION['user'] = $userData;
                 }
             }
             else
             {
-                $resp['code'] = 0;      
-                $_SESSION['user'] = $userData;
+                $resp['code'] = 1;
             }
         }
     }
