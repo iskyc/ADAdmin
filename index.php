@@ -42,14 +42,18 @@ $container['db'] = function ($c) {
     return $medoo;
 };
 
-function render($app, Response $response, $twig_file, $params)
+function redirect()
+{
+    
+}
+
+function render($app, Response $response, $twig_file, $params=[NULL])
 {
     global $_SESSION;
     global $menu_item_list;    
     if (!isset($_SESSION['user']))
     {
-        $app->redirect('/');
-        return;
+        return $response->withRedirect('/login', 302);
     }
     $user = $_SESSION['user'];
     $filter_menu = array();
@@ -70,29 +74,27 @@ function render($app, Response $response, $twig_file, $params)
         array_combine($temp_param, $params);
     }
 
-    $app->view->render($response, 'index.twig', $temp_param);    
+    return $this->view->render($response, 'index.twig', $temp_param);    
 }
 
 $app->get('/', function (Request $request, Response $response)
 {
-    render($this, $response, 'index.twig');
+    return render($this, $response, 'index.twig');
 });
 
 $app->get('/member', function (Request $request, Response $response)
 {
     global $_SESSION;    
     if (!isset($_SESSION['user']))
-    {
-        $app->redirect('/');
-        return;
+    {        
+        return $response->withRedirect('/login', 302);
     }
     $user = $_SESSION['user'];
     if ($user['type'] != 0)
-    {
-        $response->withStatus(404);
-        return;        
+    {        
+        return $response->withStatus(404);
     }
-    render($this, $response, 'member.twig');    
+    returnrender($this, $response, 'member.twig');    
 });
 
 $app->get('/adconfig', function (Request $request, Response $response)
@@ -100,14 +102,12 @@ $app->get('/adconfig', function (Request $request, Response $response)
     global $_SESSION;    
     if (!isset($_SESSION['user']))
     {
-        $app->redirect('/');
-        return;
+        return $response->withRedirect('/login', 302);
     }
     $user = $_SESSION['user'];
     if ($user['type'] != 0)
     {
-        $response->withStatus(404);
-        return;        
+        return $response->withStatus(404);
     }
     render($this, $response, 'adconfig.twig');    
 });
@@ -117,10 +117,9 @@ $app->get('/madconfig', function (Request $request, Response $response)
     global $_SESSION;    
     if (!isset($_SESSION['user']))
     {
-        $app->redirect('/');
-        return;
+        return $response->withRedirect('/login', 302);
     }
-    render($this, $response, 'madconfig.twig');    
+    return render($this, $response, 'madconfig.twig');    
 });
 
 $app->get('/domainconfig', function (Request $request, Response $response)
@@ -128,21 +127,14 @@ $app->get('/domainconfig', function (Request $request, Response $response)
     global $_SESSION;    
     if (!isset($_SESSION['user']))
     {
-        $app->redirect('/');
-        return;
-    }    $user = $_SESSION['user'];
+        return $response->withRedirect('/login', 302);
+    } 
+   $user = $_SESSION['user'];
     if ($user['type'] != 0)
     {
-        $response->withStatus(404);
-        return;        
+        return $response->withStatus(404);
     }
-    $user = $_SESSION['user'];
-    if ($user['type'] != 0)
-    {
-        $response->withStatus(404);
-        return;        
-    }
-    render($this, $response, 'domainconfig.twig');    
+    return render($this, $response, 'domainconfig.twig');    
 });
 
 $app->get('/login', function (Request $request, Response $response)
@@ -153,8 +145,7 @@ $app->get('/login', function (Request $request, Response $response)
         $user = $_SESSION['user'];            
         if ($user['state'] == 0)
         {
-            $this->redirect('/');
-            return;
+            return $response->withRedirect('/login', 302);
         }
     }
     $this->view->render($response, 'login.twig');        
