@@ -95,9 +95,9 @@ $app->get('/member', function (Request $request, Response $response)
         return $response->withStatus(404);
     }
 
-//    $users = $this->db->select('');
+   $users = $this->db->select('users', '*', ['type[=]' => 1]);
 
-    return render($this, $response, 'member.twig');
+    return render($this, $response, 'member.twig', array('users' => $users));
 });
 
 $app->get('/adconfig', function (Request $request, Response $response)
