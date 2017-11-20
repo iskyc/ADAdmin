@@ -120,16 +120,16 @@
                                         }
                                         else if (resp.code == 2)
                                         {
-                                            toastr.error("用户不存在!", "登陆失败!", opts);                                            
+                                            toastr.error("用户不存在!", "登陆失败!", opts);
                                             $username.select();
                                         }
                                         else if (resp.code == 3)
                                         {
-                                            toastr.error("请输入用户名和密码!", "登陆失败!", opts);                                            
+                                            toastr.error("请输入用户名和密码!", "登陆失败!", opts);
                                         }
                                         else if (resp.code == 4)
                                         {
-                                            toastr.error("用户禁止登录!请联系管理员", "登陆失败!", opts);                                            
+                                            toastr.error("用户禁止登录!请联系管理员", "登陆失败!", opts);
                                             $username.select();
                                         }
                                     }

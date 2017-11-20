@@ -34,31 +34,102 @@
                     <tr role="row">
                         <th tabindex="0" rowspan="1" colspan="1" style="width: 209px;">用户名</th>
                         <th  tabindex="0" rowspan="1" colspan="1" style="width: 311px;">邮箱</th>
-                        <th tabindex="0" rowspan="1" colspan="1" style="width: 166px;">状态</th>
-                        <th tabindex="0" rowspan="1" colspan="1" style="width: 77px;">登陆时间</th>
-                        <th tabindex="0" rowspan="1" colspan="1" style="width: 140px;">创建时间</th>
+                        <th tabindex="0" rowspan="1" colspan="1" style="width: 80px;">状态</th>
+                        <th tabindex="0" rowspan="1" colspan="1" style="width: 180px;">登陆时间</th>
+                        <th tabindex="0" rowspan="1" colspan="1" style="width: 180px;">创建时间</th>
                         <th tabindex="0" rowspan="1" colspan="1" style="width: 136px;">操作</th>
                     </tr>
                     </thead>
                     <tbody>
                         {% for user in users %}
                         <tr role="row" class="odd">
-                                <td>{{ user.name }}</td>
-                                <td>{{ user.email }}</td>
-                                <td>
+                                <td id="un-{{ user.id }}">{{ user.username }}</td>
+                                <td id="mail-{{ user.id }}">{{ user.email }}</td>
+                                <td id="state-{{ user.id }}">
                                     {% if user.state != 0 %}
-
+                                        <span class="label label-danger" id="un-{{ user.id }}">拉黑</span>
+                                    {% else %}
+                                        <span class="label label-success" id="un-{{ user.id }}">正常</span>
                                     {% endif %}
                                 </td>
-                                <td>{{ user.last_time }}</td>
-                                <td>{{ user.create_time }}</td>
-                                <td><button class="btn btn-blue">编辑</button></td>
+                                <td id="last-{{ user.id }}">{{ user.last_time }}</td>
+                                <td id="create-{{ user.id }}">{{ user.create_time }}</td>
+                                <td><a href="javascript:;" onclick="javascript:editUser(this)" class="btn btn-primary btn-single btn-sm" id="edit-{{ user.uid }}">编辑</a>
+                                </td>
                         </tr>                                    
                         {% endfor %}
                     </tbody>
                 </table>
                 <div class="row"><div class="col-xs-6"></div><div class="col-xs-6"><div class="dataTables_paginate paging_simple_numbers" id="example-1_paginate"><ul class="pagination"><li class="paginate_button previous disabled" aria-controls="example-1" tabindex="0" id="example-1_previous"><a href="#">上一页</a></li><li class="paginate_button active" aria-controls="example-1" tabindex="0"><a href="#">1</a></li><li class="paginate_button " aria-controls="example-1" tabindex="0"><a href="#">2</a></li><li class="paginate_button " aria-controls="example-1" tabindex="0"><a href="#">3</a></li><li class="paginate_button " aria-controls="example-1" tabindex="0"><a href="#">4</a></li><li class="paginate_button " aria-controls="example-1" tabindex="0"><a href="#">5</a></li><li class="paginate_button " aria-controls="example-1" tabindex="0"><a href="#">6</a></li><li class="paginate_button next" aria-controls="example-1" tabindex="0" id="example-1_next"><a href="#">下一页</a></li></ul></div></div></div></div>
 
+        </div>
+    </div>
+
+    <script>
+        function editUser(obj)
+        {
+            var id = $(obj).attr("id");
+            console.log(id);
+            $('#modal-6').modal('show', {backdrop: 'static'});
+        }
+    </script>
+
+{% endblock %}
+
+{% block modal %}
+    <div class="modal fade" id="modal-6">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">编辑用户信息</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+                                <label for="username" class="control-label">用户名</label>
+                                <input type="text" class="form-control" id="username" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="field-2" class="control-label">邮箱</label>
+                                <input type="text" class="form-control" id="email" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+                                <label for="password" class="control-label">密码(如无需修改，则留空)</label>
+
+                                <input type="text" class="form-control" id="password" placeholder="密码">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+
+                            <div class="form-group no-margin">
+                                <label for="state" class="control-label">状态</label>
+                                <select class="form-control" id="state">
+                                    <option value="0">正常</option>
+                                    <option value="1">拉黑</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-info">保存</button>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

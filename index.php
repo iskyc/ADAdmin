@@ -9,8 +9,6 @@ require 'config.php';
 date_default_timezone_set('PRC');
 session_start();
 
-
-
 //$app = new \Slim\App;
 $app = new \Slim\App(["settings" => $config]);
 // Fetch DI Container
@@ -71,7 +69,7 @@ function render($app, Response $response, $twig_file, $params=array())
     $temp_param = array('menu' => $filter_menu, 'active_menu' => $active_menu);
     if (isset($params) && count($params) > 0)
     {
-        array_combine($temp_param, $params);
+        $temp_param = array_merge($temp_param, $params);
     }
 
     return $app->view->render($response, $twig_file, $temp_param);
@@ -80,6 +78,35 @@ function render($app, Response $response, $twig_file, $params=array())
 $app->get('/', function (Request $request, Response $response)
 {
     return render($this, $response, 'index.twig');
+});
+
+$app->post('/edituser', function (Request $request, Response $response)
+{
+    global $_SESSION;
+    if (!isset($_SESSION['user']))
+    {
+        return $response->withRedirect('/login', 302);
+    }
+    $user = $_SESSION['user'];
+    if ($user['type'] != 0)
+    {
+        return $response->withStatus(404);
+    }
+    $respData = array();
+    $code = 0;
+    $uid = $request->getParsedBody()['uid'];
+    if (!isset($uid))
+    {
+        $code = 1;
+    }
+    else
+    {
+
+    }
+
+    $users = $this->db->select('users', '*', ['type[=]' => 1]);
+
+    return render($this, $response, 'member.twig', array('users' => $users));
 });
 
 $app->get('/member', function (Request $request, Response $response)
@@ -143,13 +170,10 @@ $app->get('/domainconfig', function (Request $request, Response $response)
 $app->get('/login', function (Request $request, Response $response)
 {
     global $_SESSION;
-    if (isset($_SESSION['user']))
+    $user = $_SESSION['user'];
+    if (isset($user))
     {
-        $user = $_SESSION['user'];            
-        if ($user['state'] == 0)
-        {
-            return $response->withRedirect('/login', 302);
-        }
+        return $response->withRedirect('/', 302);
     }
     $this->view->render($response, 'login.twig');        
 });
