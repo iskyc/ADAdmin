@@ -121,10 +121,26 @@ $app->get('/member', function (Request $request, Response $response)
     {        
         return $response->withStatus(404);
     }
+    $page = $request->getQueryParams()['page'];
+    if (!isset($page))
+    {
+        $page = 1;
+    }
 
-   $users = $this->db->select('users', '*', ['type[=]' => 1]);
+    $row = 50;
+    $offset = ($page - 1) * $row;
 
-    return render($this, $response, 'member.twig', array('users' => $users));
+    $count = $this->db->count('users', ['type' => 1]);
+
+    $total_page = $count / $row;
+    if ($count % $row != 0)
+    {
+        $total_page++;
+    }
+
+   $users = $this->db->select('users', '*', ['type[=]' => 1], ['limit' => [$row, $offset]]);
+
+    return render($this, $response, 'member.twig', array('users' => $users, 'total_page' => $total_page));
 });
 
 $app->get('/adconfig', function (Request $request, Response $response)
