@@ -73,7 +73,14 @@
             console.log(username);
             $('#username').val(username);
             $('#email').val(mail);
-            $('#state').val(state);
+            if (state == '拉黑')
+            {
+                $('#state').val(1);
+            }
+            else
+            {
+                $('#state').val(0);
+            }
             $('#modal-6').modal('show', {backdrop: 'static'});
         }
     </script>
