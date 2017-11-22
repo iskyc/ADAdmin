@@ -67,10 +67,11 @@
             var id = $(obj).attr("id").split("-")[1];
             console.log(id);
             console.log('#un-'+id)
+            console.log($("#un-"+id).val())
 //            var username = document.getElementById("un-" + id).innerHTML;
             $('#username').val($('#un-'+id).val());
             $('#email').val($('#mail-'+id).val());
-            $('#state').val($('#state-'+id).val());
+            $('#state').val($('#s-'+id).val());
             $('#modal-6').modal('show', {backdrop: 'static'});
         }
     </script>
