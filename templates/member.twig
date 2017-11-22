@@ -66,12 +66,14 @@
         {
             var id = $(obj).attr("id").split("-")[1];
             console.log(id);
-            console.log('#un-'+id)
-            console.log($("#un-"+id).val())
-//            var username = document.getElementById("un-" + id).innerHTML;
-            $('#username').val($('#un-'+id).val());
-            $('#email').val($('#mail-'+id).val());
-            $('#state').val($('#s-'+id).val());
+            console.log('#un-'+id);
+            var username = document.getElementById("un-" + id).innerHTML;
+            var mail = document.getElementById("mail-" + id).innerHTML;
+            var state = document.getElementById("s-" + id).innerHTML;
+            console.log(username);
+            $('#username').val(username);
+            $('#email').val(mail);
+            $('#state').val(state);
             $('#modal-6').modal('show', {backdrop: 'static'});
         }
     </script>
