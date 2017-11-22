@@ -29,7 +29,7 @@
                     <thead>
                     <tr role="row">
                         <th tabindex="0" rowspan="1" colspan="1" style="width: 209px;">用户名</th>
-                        <th  tabindex="0" rowspan="1" colspan="1" style="width: 311px;">邮箱</th>
+                        <th tabindex="0" rowspan="1" colspan="1" style="width: 311px;">邮箱</th>
                         <th tabindex="0" rowspan="1" colspan="1" style="width: 80px;">状态</th>
                         <th tabindex="0" rowspan="1" colspan="1" style="width: 180px;">登陆时间</th>
                         <th tabindex="0" rowspan="1" colspan="1" style="width: 180px;">创建时间</th>
@@ -39,13 +39,13 @@
                     <tbody>
                         {% for user in users %}
                         <tr role="row" class="odd">
-                                <td id="un-{{ user.id }}">{{ user.username }}</td>
-                                <td id="mail-{{ user.id }}">{{ user.email }}</td>
-                                <td id="state-{{ user.id }}">
+                                <td id="un-{{ user.uid }}">{{ user.username }}</td>
+                                <td id="mail-{{ user.uid }}">{{ user.email }}</td>
+                                <td id="state-{{ user.uid }}">
                                     {% if user.state != 0 %}
-                                        <span class="label label-danger" id="un-{{ user.id }}">拉黑</span>
+                                        <span class="label label-danger" id="s-{{ user.uid }}">拉黑</span>
                                     {% else %}
-                                        <span class="label label-success" id="un-{{ user.id }}">正常</span>
+                                        <span class="label label-success" id="s-{{ user.uid }}">正常</span>
                                     {% endif %}
                                 </td>
                                 <td id="last-{{ user.id }}">{{ user.last_time }}</td>
@@ -66,6 +66,7 @@
         {
             var id = $(obj).attr("id");
             console.log(id);
+            console.log('#un-'+id)
 //            var username = document.getElementById("un-" + id).innerHTML;
             $('#username').val($('#un-'+id).val());
             $('#email').val($('#mail-'+id).val());
