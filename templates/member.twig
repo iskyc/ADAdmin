@@ -20,11 +20,7 @@
             <script type="text/javascript">
                 jQuery(document).ready(function($)
                 {
-                    $("#example-1").dataTable({
-                        aLengthMenu: [
-                            [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]
-                        ]
-                    });
+
                 });
             </script>
 
@@ -60,7 +56,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                <div class="row"><div class="col-xs-6"></div><div class="col-xs-6"><div class="dataTables_paginate paging_simple_numbers" id="example-1_paginate"><ul class="pagination"><li class="paginate_button previous disabled" aria-controls="example-1" tabindex="0" id="example-1_previous"><a href="#">上一页</a></li><li class="paginate_button active" aria-controls="example-1" tabindex="0"><a href="#">1</a></li><li class="paginate_button " aria-controls="example-1" tabindex="0"><a href="#">2</a></li><li class="paginate_button " aria-controls="example-1" tabindex="0"><a href="#">3</a></li><li class="paginate_button " aria-controls="example-1" tabindex="0"><a href="#">4</a></li><li class="paginate_button " aria-controls="example-1" tabindex="0"><a href="#">5</a></li><li class="paginate_button " aria-controls="example-1" tabindex="0"><a href="#">6</a></li><li class="paginate_button next" aria-controls="example-1" tabindex="0" id="example-1_next"><a href="#">下一页</a></li></ul></div></div></div></div>
+                <div class="row"><div class="col-xs-6"></div><div class="col-xs-6"><div class="dataTables_paginate paging_simple_numbers" id="example-1_paginate"><ul class="pagination"><li class="paginate_button previous disabled" aria-controls="example-1" tabindex="0" id="example-1_previous"><a href="#">上一页</a></li><li class="paginate_button active" aria-controls="example-1" tabindex="0"><a href="#">1</a></li><li class="paginate_button " aria-controls="example-1" tabindex="0"><a href="#">2</a></li><li class="paginate_button " aria-controls="example-1" tabindex="0"><a href="#">3</a></li><li class="paginate_button " aria-controls="example-1" tabindex="0"><a href="#">4</a></li><li class="paginate_button next" aria-controls="example-1" tabindex="0" id="example-1_next"><a href="#">下一页</a></li></ul></div></div></div></div>
 
         </div>
     </div>
@@ -70,6 +66,10 @@
         {
             var id = $(obj).attr("id");
             console.log(id);
+//            var username = document.getElementById("un-" + id).innerHTML;
+            $('#username').val($('#un-'+id).val());
+            $('#email').val($('#mail-'+id).val());
+            $('#state').val($('#state-'+id).val());
             $('#modal-6').modal('show', {backdrop: 'static'});
         }
     </script>
