@@ -64,7 +64,7 @@
     <script>
         function editUser(obj)
         {
-            var id = $(obj).attr("id");
+            var id = $(obj).attr("id").split("-")[1];
             console.log(id);
             console.log('#un-'+id)
 //            var username = document.getElementById("un-" + id).innerHTML;
