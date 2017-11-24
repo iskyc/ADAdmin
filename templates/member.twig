@@ -20,7 +20,93 @@
             <script type="text/javascript">
                 jQuery(document).ready(function($)
                 {
+                    // Reveal Login form
+                    setTimeout(function(){ $(".fade-in-effect").addClass('in'); }, 1);
 
+
+                    // Validation and Ajax action
+                    $("form#login").validate({
+                        rules: {
+                            uid: {
+                                required: true
+                            },
+
+                            username: {
+                                required: true
+                            },
+
+                            email: {
+                                required: true
+                            }
+                        },
+
+                        messages: {
+                            uid: {
+                                required: 'uid不能为空！'
+                            },
+
+                            username: {
+                                required: '用户名不能为空！'
+                            },
+
+                            email: {
+                                required: '邮箱不能为空！'
+                            }
+                        },
+
+                        // Form Processing via AJAX
+                        submitHandler: function(form)
+                        {
+                            show_loading_bar(70); // Fill progress bar to 70% (just a given value)
+
+                            var opts = {
+                                "closeButton": true,
+                                "debug": false,
+                                "positionClass": "toast-top-full-width",
+                                "onclick": null,
+                                "showDuration": "300",
+                                "hideDuration": "1000",
+                                "timeOut": "5000",
+                                "extendedTimeOut": "1000",
+                                "showEasing": "swing",
+                                "hideEasing": "linear",
+                                "showMethod": "fadeIn",
+                                "hideMethod": "fadeOut"
+                            };
+
+                            $.ajax({
+                                url: "/edituser",
+                                method: 'POST',
+                                dataType: 'json',
+                                data: {
+                                    uid: $(form).find('#uid').val(),
+                                    passwd: $(form).find('#passwd').val(),
+                                    state: $(form).find('#state').val(),
+                                },
+                                success: function(resp)
+                                {
+                                    show_loading_bar({
+                                        delay: .5,
+                                        pct: 100,
+                                        finish: function(){
+
+                                            // Redirect after successful login page (when progress bar reaches 100%)
+                                            if(resp.code != 0)
+                                            {
+                                                toastr.error("保存不成功", "操作失败!", opts);
+                                            }
+                                            else
+                                            {
+                                                toastr.error("保存成功", "操作成功!", opts);
+                                            }
+                                        }
+                                    });
+
+                                }
+                            });
+
+                        }
+                    });
                 });
             </script>
 
@@ -65,12 +151,10 @@
         function editUser(obj)
         {
             var id = $(obj).attr("id").split("-")[1];
-            console.log(id);
-            console.log('#un-'+id);
             var username = document.getElementById("un-" + id).innerHTML;
             var mail = document.getElementById("mail-" + id).innerHTML;
             var state = document.getElementById("s-" + id).innerHTML;
-            console.log(username);
+            $('#uid').val(id);
             $('#username').val(username);
             $('#email').val(mail);
             if (state == '拉黑')
@@ -96,11 +180,11 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title">编辑用户信息</h4>
                 </div>
-                <div class="modal-body">
-
+                <form method="post" role="form" id="edituser" class="fade-in-effect">
+                    <div class="modal-body">
+                    <input id="uid" type="text" hidden/>
                     <div class="row">
                         <div class="col-md-6">
-
                             <div class="form-group">
                                 <label for="username" class="control-label">用户名</label>
                                 <input type="text" class="form-control" id="username" readonly>
@@ -135,10 +219,10 @@
                         </div>
                     </div>
                 </div>
-
+                </form>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-info">保存</button>
+                    <button type="submit" class="btn btn-info">保存</button>
                 </div>
             </div>
         </div>

@@ -92,21 +92,41 @@ $app->post('/edituser', function (Request $request, Response $response)
     {
         return $response->withStatus(404);
     }
-    $respData = array();
     $code = 0;
     $uid = $request->getParsedBody()['uid'];
+    $passwd = $request->getParsedBody()['passwd'];
+    $state = $request->getParsedBody()['state'];
     if (!isset($uid))
     {
         $code = 1;
     }
     else
     {
-
+        $data = $this->db->select('users', '*', ['uid[=]' => $uid]);
+        if (!isset($data) || count($data) == 0)
+        {
+            $code = 2;  // 用户不存在
+        }
+        else
+        {
+            if ($state != 0)
+            {
+                $state = 1;
+            }
+            $userData = $data[0];
+            if (isset($passwd) && strlen($passwd) > 4)
+            {
+                $this->db->update('users', ['state[=]' => $state, 'password' => md5($passwd)], ['uid[=]' => $uid]);
+            }
+            else
+            {
+                $this->db->update('users', ['state[=]' => $state], ['uid[=]' => $uid]);
+            }
+            $code = 0;
+        }
     }
 
-    $users = $this->db->select('users', '*', ['type[=]' => 1]);
-
-    return render($this, $response, 'member.twig', array('users' => $users));
+    return $response->withJson(['code' => $code], 200);
 });
 
 $app->get('/member', function (Request $request, Response $response)
