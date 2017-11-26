@@ -3,6 +3,11 @@
     会员管理
 {% endblock %}
 
+{% block script %}
+    <script src="static/assets/js/jquery-validate/jquery.validate.min.js"></script>
+    <script src="static/assets/js/toastr/toastr.min.js"></script>
+{% endblock %}
+
 {% block content %}
     <div class="page-title">
 
@@ -25,7 +30,7 @@
 
 
                     // Validation and Ajax action
-                    $("form#edituser").validate({
+                    $("#edituser").validate({
                         rules: {
                             uid: {
                                 required: true
@@ -98,6 +103,7 @@
                                             else
                                             {
                                                 toastr.error("保存成功", "操作成功!", opts);
+                                                $("#modal-6").modal('hide');
                                             }
                                         }
                                     });
@@ -142,7 +148,19 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                <div class="row"><div class="col-xs-6"></div><div class="col-xs-6"><div class="dataTables_paginate paging_simple_numbers" id="example-1_paginate"><ul class="pagination"><li class="paginate_button previous disabled" aria-controls="example-1" tabindex="0" id="example-1_previous"><a href="#">上一页</a></li><li class="paginate_button active" aria-controls="example-1" tabindex="0"><a href="#">1</a></li><li class="paginate_button " aria-controls="example-1" tabindex="0"><a href="#">2</a></li><li class="paginate_button " aria-controls="example-1" tabindex="0"><a href="#">3</a></li><li class="paginate_button " aria-controls="example-1" tabindex="0"><a href="#">4</a></li><li class="paginate_button next" aria-controls="example-1" tabindex="0" id="example-1_next"><a href="#">下一页</a></li></ul></div></div></div></div>
+                {% if pages != '' %}
+                <div class="row">
+                    <div class="col-xs-6"></div>
+                    <div class="col-xs-6">
+                        <div class="dataTables_paginate paging_simple_numbers" id="example-1_paginate">
+                            <ul class="pagination">
+                                {{ pages }}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
 
         </div>
     </div>

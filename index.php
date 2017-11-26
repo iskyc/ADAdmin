@@ -120,7 +120,7 @@ $app->post('/edituser', function (Request $request, Response $response)
             }
             else
             {
-                $this->db->update('users', ['state[=]' => $state], ['uid[=]' => $uid]);
+                $this->db->update('users', ['state' => $state], ['uid[=]' => $uid]);
             }
             $code = 0;
         }
@@ -157,10 +157,37 @@ $app->get('/member', function (Request $request, Response $response)
     {
         $total_page++;
     }
-
    $users = $this->db->select('users', '*', ['type[=]' => 1], ['limit' => [$row, $offset]]);
 
-    return render($this, $response, 'member.twig', array('users' => $users, 'total_page' => $total_page));
+    $pages = array();
+    if ($total_page > 1)
+    {
+        if ($total_page == 2)
+        {
+            if ($page == 2)
+            {
+                array_push($pages, '<li class="paginate_button previous" aria-controls="example-1" tabindex="0"
+                                    id="example-1_previous"><a href="/member?page=1">上一页</a></li>');
+                array_push($pages, '<li class="paginate_button active" aria-controls="example-1" tabindex="0"><a
+                                            href="#">2</a></li>');
+            }
+            else
+            {
+                array_push($pages, '<li class="paginate_button active" aria-controls="example-1" tabindex="0"><a
+                                            href="#">1</a></li>');
+                array_push($pages, '<li class="paginate_button next" aria-controls="example-1" tabindex="0"
+                                    id="example-1_next"><a href="/member?page=2">下一页</a></li>');
+            }
+        }
+        else
+        {
+
+        }
+    }
+
+    $pageStrs = implode("\r\n", $pages);
+
+    return render($this, $response, 'member.twig', array('users' => $users, 'curpage' => $page, 'pages' => $pageStrs));
 });
 
 $app->get('/adconfig', function (Request $request, Response $response)
